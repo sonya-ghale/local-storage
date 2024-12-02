@@ -5,10 +5,11 @@ import Email from "./components/Email";
 import Subject from "./components/Subject";
 import Message from "./components/Message";
 import SubmitButton from "./components/SubmitButton";
-import InputType from "./components/InputType";
-import TextArea from "./components/TextArea";
+// import InputType from "./components/InputType";
+// import TextArea from "./components/TextArea";
 import ClearButton from "./components/ClearButton";
 import RemoveItemButton from "./components/RemoveItemButton";
+
 export default function App() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -18,6 +19,7 @@ export default function App() {
   });
   //Notification ko lagi
   const [notification, setNotification] = useState("");
+  const [fetchedName, setFetchedName] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -33,12 +35,12 @@ export default function App() {
     const localset = JSON.stringify(formData);
     localStorage.setItem("Details:", localset);
     localStorage.setItem("Names:", localset);
-    setNotification("Details has been stored successfully");
+    setNotification("Names has been stored successfully");
     console.log("Form Submitted:", formData);
   };
 
   useEffect(() => {
-    const fetchName = localStorage.getItem("name");
+    const fetchName = localStorage.getItem("Names:");
     if (fetchName) {
       setFetchedName(fetchName);
       console.log("Fetched Name:", fetchName);
@@ -54,6 +56,10 @@ export default function App() {
   const handleRemoveItem = (key) => {
     localStorage.removeItem(key);
     setNotification(`"${key}" has been removed from local storage!`);
+    // Clear the fetched name when removing "Details:"
+    if (key === "Details:") {
+      setFetchedName("");
+    }
   };
 
   return (
@@ -70,10 +76,18 @@ export default function App() {
         <ClearButton onClick={handleClearStorage} />
         <RemoveItemButton keyToRemove="Details:" onClick={handleRemoveItem} />
       </div>
-      <div>{/* <p>Form Details{fetchName}</p> */}</div>
+      <div>
+        <p>
+          Form Details:{" "}
+          {fetchedName
+            ? `${JSON.parse(fetchedName).fullName}
+             ${JSON.parse(fetchedName).email}`
+            : "No data available"}
+        </p>
+      </div>
 
-      {/* hoho */}
-      <div
+      {/*   SECOND FORM */}
+      {/* <div
         className="form-container"
         style={{
           width: "100%",
@@ -96,11 +110,11 @@ export default function App() {
           </div>
           <SubmitButton />
         </form>
-      </div>
+      </div> */}
       {notification && (
         <div
           style={{
-            marginTop: "-5rem",
+            marginTop: "1rem",
             marginBottom: "2rem",
             padding: "0.5rem",
             backgroundColor: "#dff0d8",
